@@ -58,6 +58,7 @@ from .file import File
 from .mentions import AllowedMentions
 from . import __version__, utils
 from .utils import MISSING
+import os
 
 _log = logging.getLogger(__name__)
 
@@ -286,11 +287,11 @@ def _set_api_version(value: int):
         raise ValueError(f'expected either 9 or 10 not {value}')
 
     INTERNAL_API_VERSION = value
-    Route.BASE = f'https://discord.com/api/v{value}'
+    Route.BASE = os.environ.get('DISCORD_REST_ENDPOINT', f'https://discord.com/api/v{value}')
 
 
 class Route:
-    BASE: ClassVar[str] = 'https://discord.com/api/v10'
+    BASE: ClassVar[str] = os.environ.get('DISCORD_REST_ENDPOINT', 'https://discord.com/api/v10')
 
     def __init__(self, method: str, path: str, *, metadata: Optional[str] = None, **parameters: Any) -> None:
         self.path: str = path
